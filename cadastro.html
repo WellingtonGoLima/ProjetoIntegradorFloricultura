@@ -27,6 +27,10 @@
             LOGIN
         </a>
 
+        <a class="nav-link text-white" href="compras.html">
+            Compras
+        </a>
+
     </nav>
 
     
@@ -112,8 +116,7 @@
                         class="form-control">
                 </div>
 
-                <!-- Botão -->
-                <button id="btnCadastrar" class="btn btn-success w-100">
+                <button type="button" id="btnCadastrar" class="btn btn-success w-100">
                     Cadastrar Arranjo
                 </button>
 
@@ -125,65 +128,63 @@
 
     <script>
 
+        document.addEventListener("DOMContentLoaded", function () {
         
-            document.getElementById("btnCadastrar").addEventListener("click", function(event){
-            
-                event.preventDefault();
-            
+            document.getElementById("btnCadastrar").addEventListener("click", function () {
+        
                 let nome = document.getElementById("nome").value;
                 let preco = document.getElementById("preco").value;
                 let estoque = document.getElementById("estoque").value;
                 let categoria = document.getElementById("categoria").value;
                 let descricao = document.getElementById("descricao").value;
-            
-                let fotoInput = document.getElementById("foto");
-            
-                let arquivo = fotoInput.files[0];
-            
-                if(!arquivo){
-            
-                    alert("Escolha uma imagem!");
+                let arquivo = document.getElementById("foto").files[0];
+        
+                if (!nome || !preco || !estoque || !arquivo) {
+                    alert("Preencha todos os campos!");
                     return;
-            
                 }
-            
+        
                 let leitor = new FileReader();
-            
-                leitor.onload = function(){
-            
+        
+                leitor.onerror = function () {
+                    alert("Erro ao carregar imagem!");
+                };
+        
+                leitor.onload = function () {
+        
                     let produto = {
-            
+                        id: Date.now(),
                         nome: nome,
-                        preco: preco,
-                        estoque: estoque,
+                        preco: Number(preco),
+                        estoque: Number(estoque),
                         categoria: categoria,
                         descricao: descricao,
                         imagem: leitor.result
-            
                     };
-            
-                    let produtos =
-                        JSON.parse(localStorage.getItem("produtos")) || [];
-            
+        
+                    let produtos = JSON.parse(localStorage.getItem("produtos")) || [];
+        
                     produtos.push(produto);
-            
-                    localStorage.setItem(
-                        "produtos",
-                        JSON.stringify(produtos)
-                    );
-            
+        
+                    localStorage.setItem("produtos", JSON.stringify(produtos));
+        
+                    console.log("SALVO NO LOCALSTORAGE:", produtos);
+        
                     alert("Produto cadastrado com sucesso!");
-            
-                    // limpa formulário
+        
                     document.querySelector("form").reset();
-            
+                };
+        
+                try {
+                    leitor.readAsDataURL(arquivo);
+                } catch (e) {
+                    alert("Erro ao processar imagem!");
+                    console.log(e);
                 }
-            
-                leitor.readAsDataURL(arquivo);
-            
+        
             });
-            
-    
+        
+        });
         
         </script>
 

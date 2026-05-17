@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<title>Painel Admin</title>
+</head>
+
+<body class="bg-light">
+
+<nav class="nav nav-pills nav-fill bg-dark p-3">
+    <a class="nav-link text-white" href="cadastro.html">CADASTRO</a>
+    <a class="nav-link text-white" href="compras.html">COMPRAS</a>
+    <a class="nav-link active" href="#">ADMIN</a>
+</nav>
+
+<div class="container mt-5">
+
+    <h1 class="text-center mb-4">Painel de Estoque 🧑‍💼</h1>
+
+    <div id="listaAdmin" class="row"></div>
+
+</div>
+
+<script>
+
+function renderizarAdmin() {
+
+    let lista = document.getElementById("listaAdmin");
+    let produtos = JSON.parse(localStorage.getItem("produtos")) || [];
+
+    lista.innerHTML = "";
+
+    if (produtos.length === 0) {
+        lista.innerHTML = "<p class='text-center'>Nenhum produto cadastrado.</p>";
+        return;
+    }
+
+    produtos.forEach((produto, index) => {
+
+        lista.innerHTML += `
+        <div class="col-md-4 mb-4">
+
+            <div class="card shadow h-100">
+
+                <img src="${produto.imagem}"
+                     class="card-img-top"
+                     style="height:200px; object-fit:cover;">
+
+                <div class="card-body">
+
+                    <h5>${produto.nome}</h5>
+
+                    <p><strong>Estoque: ${produto.estoque}</strong></p>
+
+                    <div class="d-flex gap-2">
+
+                        <button class="btn btn-success w-100"
+                            onclick="aumentar(${index})">
+                            +
+                        </button>
+
+                        <button class="btn btn-warning w-100"
+                            onclick="diminuir(${index})">
+                            -
+                        </button>
+
+                    </div>
+
+                    <button class="btn btn-danger w-100 mt-2"
+                        onclick="excluir(${index})">
+                        Excluir
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+        `;
+    });
+}
+
+function salvar(produtos) {
+    localStorage.setItem("produtos", JSON.stringify(produtos));
+}
+
+function aumentar(index) {
+    let produtos = JSON.parse(localStorage.getItem("produtos")) || [];
+    produtos[index].estoque++;
+    salvar(produtos);
+    renderizarAdmin();
+}
+
+function diminuir(index) {
+    let produtos = JSON.parse(localStorage.getItem("produtos")) || [];
+
+    if (produtos[index].estoque > 0) {
+        produtos[index].estoque--;
+    }
+
+    salvar(produtos);
+    renderizarAdmin();
+}
+
+function excluir(index) {
+    let produtos = JSON.parse(localStorage.getItem("produtos")) || [];
+
+    produtos.splice(index, 1);
+
+    salvar(produtos);
+    renderizarAdmin();
+}
+
+renderizarAdmin();
+
+</script>
+
+</body>
+</html>
